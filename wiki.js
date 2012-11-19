@@ -21,10 +21,11 @@ $(function(){
 
 	$("div#mw-content-text a").mouseover(function(e){
 		
-		cacheget(this.href, function(data){	
+		cacheget(this.href, function(data){
+			
 			// Get the first paragraph as plain text without citations.
 			var first_paragraph = $(data).find('div#mw-content-text > p').eq(0)
-                .text().replace(/\[[1-9]*\]/, '');
+                .text().replace(/\[[1-9].\]/, '');
 			
 			// Extract the first sentence
             var sentence_end = first_paragraph.match(/["'\)0-9a-zA-Z]{2}\.(\s|$)/);
