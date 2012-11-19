@@ -20,18 +20,21 @@ $(function(){
     }
 
 	$("div#mw-content-text a").mouseover(function(e){
-		
-		cacheget(this.href, function(data){
-			
-			// Get the first paragraph as plain text without citations.
-			var first_paragraph = $(data).find('div#mw-content-text > p').eq(0)
-                .text().replace(/\[[1-9].\]/, '');
-			
-			// Extract the first sentence
-            var sentence_end = first_paragraph.match(/["'\)0-9a-zA-Z]{2}\.(\s|$)/);
-            var first_sentence = first_paragraph.substr(0, sentence_end.index + sentence_end[0].length);
-			
-			e.currentTarget.title = first_sentence;
-		})
+
+		cacheget(this.href, function(data){	
+
+            var paragraphs = $(data).find('div#mw-content-text > p');
+            for (var k = 0; k < paragraphs.length; ++k) {
+                var content = paragraphs.eq(k).text().replace(/\[[1-9]*\]/g, ''); // no citations
+                var sentence_end = content.match(/["'\)0-9a-zA-Z]{2}\.(\s|$)/); // look for sentence
+                if (sentence_end) {
+			        // Extract the first sentence
+                    var first_sentence = content.substr(0, sentence_end.index + sentence_end[0].length);                
+			        e.currentTarget.title = first_sentence;                    
+                    return; // we're done
+                }
+            }
+
+		});
 	});
 });
